@@ -2,13 +2,7 @@ import { stringify } from 'qs';
 import merge from 'deepmerge';
 import axios from 'axios';
 import {
-  GET_LIST,
-  GET_ONE,
-  CREATE,
-  UPDATE,
-  DELETE,
-  GET_MANY,
-  GET_MANY_REFERENCE,
+  GET_LIST, GET_ONE, CREATE, UPDATE, DELETE, GET_MANY, GET_MANY_REFERENCE,
 } from './actions';
 
 import defaultSettings from './default-settings';
@@ -85,7 +79,7 @@ export default (apiUrl, userSettings = {}) => (type, resource, params) => {
         },
       };
 
-      options.method = 'PUT';
+      options.method = 'PATCH';
       options.data = JSON.stringify(data);
       break;
     }
@@ -128,67 +122,63 @@ export default (apiUrl, userSettings = {}) => (type, resource, params) => {
       throw new NotImplementedError(`Unsupported Data Provider request type ${type}`);
   }
 
-  return axios({ url, ...options })
-    .then((response) => {
-      switch (type) {
-        case GET_LIST: {
-          return {
-            data: response.data.data.map(value => Object.assign(
-              { id: value.id },
-              value.attributes,
-            )),
-            total: response.data.meta[settings.total],
-          };
-        }
-
-        case GET_MANY_REFERENCE: {
-          return {
-            data: response.data.data.map(value => Object.assign(
-              { id: value.id },
-              value.attributes,
-            )),
-            total: response.data.meta[settings.total],
-          };
-        }
-
-        case GET_ONE: {
-          const { id, attributes } = response.data.data;
-
-          return {
-            data: {
-              id, ...attributes,
-            },
-          };
-        }
-
-        case CREATE: {
-          const { id, attributes } = response.data.data;
-
-          return {
-            data: {
-              id, ...attributes,
-            },
-          };
-        }
-
-        case UPDATE: {
-          const { id, attributes } = response.data.data;
-
-          return {
-            data: {
-              id, ...attributes,
-            },
-          };
-        }
-
-        case DELETE: {
-          return {
-            data: { id: params.id },
-          };
-        }
-
-        default:
-          throw new NotImplementedError(`Unsupported Data Provider request type ${type}`);
+  return axios({ url, ...options }).then((response) => {
+    switch (type) {
+      case GET_LIST: {
+        return {
+          data: response.data.data.map(value => Object.assign({ id: value.id }, value.attributes)),
+          total: response.data.meta[settings.total],
+        };
       }
-    });
+
+      case GET_MANY_REFERENCE: {
+        return {
+          data: response.data.data.map(value => Object.assign({ id: value.id }, value.attributes)),
+          total: response.data.meta[settings.total],
+        };
+      }
+
+      case GET_ONE: {
+        const { id, attributes } = response.data.data;
+
+        return {
+          data: {
+            id,
+            ...attributes,
+          },
+        };
+      }
+
+      case CREATE: {
+        const { id, attributes } = response.data.data;
+
+        return {
+          data: {
+            id,
+            ...attributes,
+          },
+        };
+      }
+
+      case UPDATE: {
+        const { id, attributes } = response.data.data;
+
+        return {
+          data: {
+            id,
+            ...attributes,
+          },
+        };
+      }
+
+      case DELETE: {
+        return {
+          data: { id: params.id },
+        };
+      }
+
+      default:
+        throw new NotImplementedError(`Unsupported Data Provider request type ${type}`);
+    }
+  });
 };
