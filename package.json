@@ -2,7 +2,7 @@
   "name": "ra-jsonapi-client",
   "version": "0.4.6",
   "description": "JSON API data provider for react-admin.",
-  "main": "build/index.js",
+  "main": "src/index.js",
   "scripts": {
     "build": "babel ./src -d ./build",
     "test": "nyc mocha --require babel-core/register --require mock-local-storage",
@@ -41,6 +41,7 @@
     "axios": "^0.18.0",
     "chai-as-promised": "^7.1.1",
     "deepmerge": "^2.1.1",
-    "qs": "^6.5.2"
+    "qs": "^6.5.2",
+    "yarn": "^1.15.2"
   }
 }
