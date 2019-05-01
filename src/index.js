@@ -131,6 +131,7 @@ export default (apiUrl, userSettings = {}) => (type, resource, params) => {
         };
       }
 
+      case GET_MANY:
       case GET_MANY_REFERENCE: {
         return {
           data: response.data.data.map(value => Object.assign({ id: value.id }, value.attributes)),
